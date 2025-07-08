@@ -77,7 +77,7 @@ for k = 1:numel(params.task)
                     [status,result] = system(export_cmd);
                     system_cmd = sprintf(['start matlab -nodesktop -nosplash -r ' mtlb_cmd ' -logfile ' logfile{i}]);
                 else
-                    system_cmd = c([fullfile(matlabroot,'bin') '/matlab -nosplash -r ' mtlb_cmd ' -logfile ' logfile{i} ' & ']);
+                    system_cmd = sprintf([fullfile(matlabroot,'bin') '/matlab -nosplash -r ' mtlb_cmd ' -logfile ' logfile{i} ' & ']);
                 end
                 [status,result]=system(system_cmd);
             end
