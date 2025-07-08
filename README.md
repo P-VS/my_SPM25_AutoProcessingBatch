@@ -24,10 +24,14 @@ Each analysis can be started by setting all the parameters in the beginning of t
 fMRI_Class The slides of my fMRI classes are provided. During these classes, a demo dataset is analysed manually in the same way as is done by my scripts.
 Required software installed:
 
-Matlab
-SPM25 (https://www.fil.ion.ucl.ac.uk/spm/)
 MRIcroGL (https://www.mccauslandcenter.sc.edu/mricrogl/) for dicom to nifti conversion
+
+Matlab
+
+SPM25 (https://www.fil.ion.ucl.ac.uk/spm/)
+
 CAT12 (https://neuro-jena.github.io/cat/) for VBM
+
 GIFT (https://trendscenter.org/software/gift/) to use ICA-AROMA denoising
 
 IMPORTANT: !! Look at your data before starting any preprocessing. It makes no sense to lose time in trying to preprocess bad data !!
