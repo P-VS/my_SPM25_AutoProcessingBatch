@@ -33,28 +33,55 @@ GIFT (https://trendscenter.org/software/gift/) to use ICA-AROMA denoising
 IMPORTANT: !! Look at your data before starting any preprocessing. It makes no sense to lose time in trying to preprocess bad data !!
 
 Automatic set the origin in the anterior comisura and align with the MNI template to improve coregistration and normalisation steps
+
 Remove dummy scans (prefix to the file name for the combination of steps 1 and 2 = e)
+
 Realignment to the first echo (prefix to the file name = r)
+
 TOPUP like EPI geometric distortion correction based on a phase encoding gradient polarity reversed scan (pepolar) (prefix to the file name = u)
+
 For ASLBOLD: filetering between BOLD (f<0.1Hz) (prefix to the file name = f, endfix is set to _bold) and ALS (f>0.1Hz) part (endfix is set to _asl)
-denoising (prefix to the file name = d)
-Bandpass filtering and detrending
-Extension of motion regressors to 24 by adding the temporal derivative and the squared regressors)
-aCompCor (noise componenten determined on no gray or white matter voxels)
-ICA-AROMA for single echo fMRI / ME-ICA-AROMA foor multi-echo fMRI. A component is labeled as noise if at least 1 of following criteria is met:
-Fraction of the component in non brain areas > 2 * fraction of the component in brain areas (grey and white matter areas)
-The highest correlation between a component’s time course and the noise regressors (24 motion+aCompCor) (see Van Schuerbeek te al. The optimized combination of aCompCor and ICA-AROMA to reduce motion and physiologic noise in task fMRI data. Biomed. Physiologic. Eng. Express 2022, 8(5), doi:10.1088/2057-1976/ac63f0)
-Non T2*-related signal as determined with ME-ICA: Rho > 1.25 * Kappa (see Kundu et al. Differentiating BOLD and non-BOLD signals in fMRI time series using multi-echo EPI. NeuroImage 2012, 60(3): 1759-1770, code based ons tedana: https://github.com/ME-ICA/tedana)
-High frequency content > 50%
-Noise regression of the 24 motion regressors, aCompCor regressors / Soft removal of the ICA noise components
-For ASLBOLD: the S0 components as determined with ME-ICA (non ASL if Kappa > 1.25 * Rho) in step 6.3 are added to the filtered ASL component from step 5 to form the functional asl signal
+
+Denoising (prefix to the file name = d)
+
+  Bandpass filtering and detrending
+
+  Extension of motion regressors to 24 by adding the temporal derivative and the squared regressors)
+
+  aCompCor (noise componenten determined on no gray or white matter voxels)
+
+  ICA-AROMA for single echo fMRI / ME-ICA-AROMA foor multi-echo fMRI. A component is labeled as noise if at least 1 of following criteria is met:
+
+  Fraction of the component in non brain areas > 2 * fraction of the component in brain areas (grey and white matter areas)
+
+  The highest correlation between a component’s time course and the noise regressors (24 motion+aCompCor) (see Van Schuerbeek te al. The optimized combination of aCompCor and ICA-AROMA to reduce motion and   
+    physiologic noise in task fMRI data. Biomed. Physiologic. Eng. Express 2022, 8(5), doi:10.1088/2057-1976/ac63f0)
+
+  Non T2*-related signal as determined with ME-ICA: Rho > 1.25 * Kappa (see Kundu et al. Differentiating BOLD and non-BOLD signals in fMRI time series using multi-echo EPI. NeuroImage 2012, 60(3): 1759-1770, 
+    code based ons tedana: https://github.com/ME-ICA/tedana)
+
+  High frequency content > 50%
+
+  Noise regression of the 24 motion regressors, aCompCor regressors / Soft removal of the ICA noise components
+
+  For ASLBOLD: the S0 components as determined with ME-ICA (non ASL if Kappa > 1.25 * Rho) in step 6.3 are added to the filtered ASL component from step 5 to form the functional asl signal
+
 If multi-echo fMRI: echo combination (prefix to the file name = c). Choices are
-Simple averaging
-TE weighted
-T2* weighted (as in tedana: https://github.com/ME-ICA/tedana)
-Dynamic T2* mapping (see Heunis et al. 2021. The effects of multi-echo fMRI combination and rapid T2*-mapping on offline and real-time BOLD sensitivity. NeuroImage 238, 118244)
+
+  Simple averaging
+
+  TE weighted
+
+  T2* weighted (as in tedana: https://github.com/ME-ICA/tedana)
+
+  Dynamic T2* mapping (see Heunis et al. 2021. The effects of multi-echo fMRI combination and rapid T2*-mapping on offline and real-time BOLD sensitivity. NeuroImage 238, 118244)
+
 Slice time correction (also possible with HyperBand/Simultaneous multislice) (prefix to the file name = a)
+
 Normalisation to the MNI template (prefix to the file name = w)
+
 Smoothing (prefix to the file name = s)
+
 Denoising (if not done in step 6) (prefix to the file name = d)
+
 IMPORTANT: !! Look at your the result of the preprocessing before starting any 1st level (individual subject) or groups analysis. Doing statistical tests on wrongly preprocessed data can affect your results!
