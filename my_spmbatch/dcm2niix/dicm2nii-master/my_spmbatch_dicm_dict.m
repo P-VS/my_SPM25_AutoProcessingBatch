@@ -666,6 +666,7 @@ if strncmpi(vendor, 'SIEMENS', 7)
 elseif strncmpi(vendor, 'GE', 2) 
     C = [C; {
     '0009' '1001' 'LO' 'FullFidelity'
+    '0018' '0082' 'DS' 'PostLabelDelay'
     '0009' '1002' 'SH' 'SuiteId'
     '0009' '1004' 'SH' 'ProductId'
     '0009' '1027' 'SL' 'ImageActualDate'
@@ -730,7 +731,7 @@ elseif strncmpi(vendor, 'GE', 2)
     '0019' '10B2' 'DS' 'UserData11'
     '0019' '10B3' 'DS' 'UserData12'
     '0019' '10B4' 'DS' 'UserData13'
-    '0019' '10B5' 'DS' 'UserData14'
+    '0019' '10B5' 'DS' 'PostLabelDelay'
     '0019' '10B6' 'DS' 'UserData15'
     '0019' '10B7' 'DS' 'UserData16'
     '0019' '10B8' 'DS' 'UserData17'
