@@ -295,7 +295,7 @@ X2stat  =   @(x,m,s) 2*m/s^2*x;
 X2df    =   @(m,s)   2*m^2/s^2;
 %X2p    =   @(x,m,s) 1-chi2cdf(X2stat(x,m,s),X2df(m,s));
 X2p0    =   @(x,m,s) (X2stat(x,m,s)-X2df(m,s))/sqrt(2*X2df(m,s));
-X2p     =   @(x,m,s) chi2cdf(X2stat(x,m,s),X2df(m,s),'upper');
+X2p     =   @(x,m,s) my_spmbatch_chi2cdf(X2stat(x,m,s),X2df(m,s));%,'upper');
 
 
 %*************************************************************************
