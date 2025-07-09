@@ -2,7 +2,7 @@ function out = my_spmbatch_run_aslboldpreprocessing(sub,ses,run,task,datpath,par
 
 load(paramsfile)
 
-%try
+try
     %% preprocess anatomical scans
     if params.preprocess_anatomical
         [delfiles,keepfiles] = my_spmbatch_preprocess_anat(sub,ses,datpath,params);
@@ -34,10 +34,10 @@ load(paramsfile)
         % Clean up unnecessary files
         cleanup_intermediate_files(sub,ses,datpath,delfiles,keepfiles,params,params.func_save_folder,params.perf_save_folder);
     end
-%catch e
-%    fprintf('\nPP_Error\n');
-%    fprintf('\nThe error was: \n%s\n',e.message)
-%end
+catch e
+    fprintf('\nPP_Error\n');
+    fprintf('\nThe error was: \n%s\n',e.message)
+end
 
 fprintf('\nPP_Completed\n');
 
