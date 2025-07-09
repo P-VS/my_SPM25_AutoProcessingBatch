@@ -109,6 +109,8 @@ dim = size(funcdat);
         jsondat = fileread(ppparams.func(ne).jsonfile);
         jsondat = jsondecode(jsondat);
         tr = jsondat.RepetitionTime;
+
+        goodind = find(~ismember([1:dim(4)],glout_idx));
         
         if ~isempty(find(glout_idx==1))
             funcdat(:,:,:,1) = funcdat(:,:,:,goodind(1));
