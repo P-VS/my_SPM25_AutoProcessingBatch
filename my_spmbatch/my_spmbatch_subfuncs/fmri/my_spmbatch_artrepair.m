@@ -129,22 +129,20 @@ dim = size(funcdat);
 
             funcdat = reshape(funcdat,[dim(1),dim(2),dim(3),dim(4)]);
         end
-        
-        V0 = Vfunc;
-        for iv=1:numel(V0)
-            V0(iv).fname = fullfile(ppparams.subfuncdir,['v' ppparams.func(ne).prefix ppparams.func(ne).funcfile]);
-            V0(iv).descrip = 'my_spmbatch - ArtRepair';
-            V0(iv).pinfo = [1,0,0];
-            V0(iv).dt = [spm_type('float32'),spm_platform('bigend')];
-            V0(iv).n = [iv 1];
-        end
-
-        V0 = myspm_write_vol_4d(V0,funcdat);
-
-        delfiles{numel(delfiles)+1} = {V0.fname};
-        ppparams.func(ne).prefix = ['v' ppparams.func(ne).prefix];
-
-        clear V0
     end
 
-clear Vfunc funcdat
+    V0 = Vfunc;
+    for iv=1:numel(V0)
+        V0(iv).fname = fullfile(ppparams.subfuncdir,['v' ppparams.func(ne).prefix ppparams.func(ne).funcfile]);
+        V0(iv).descrip = 'my_spmbatch - ArtRepair';
+        V0(iv).pinfo = [1,0,0];
+        V0(iv).dt = [spm_type('float32'),spm_platform('bigend')];
+        V0(iv).n = [iv 1];
+    end
+
+    V0 = myspm_write_vol_4d(V0,funcdat);
+
+    delfiles{numel(delfiles)+1} = {V0.fname};
+    ppparams.func(ne).prefix = ['v' ppparams.func(ne).prefix];
+
+clear V0 Vfunc funcdat
