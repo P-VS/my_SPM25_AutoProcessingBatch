@@ -358,7 +358,7 @@ switch testmeth
         Zval          = Zstat(DVARS2,M_DV2,S_DV2);
         c             = X2stat(DVARS2,M_DV2,S_DV2);
         nu            = X2df(M_DV2,S_DV2);          %Spatial EDF 
-        NDVARS_X2     = -norminv(Pval);
+        NDVARS_X2     = -my_spmbatch_norminv(Pval);
         NDVARS_X20    = X2p0(DVARS2,M_DV2,S_DV2);
         
         %only substitute the infs, the rest is better done in matlab.
