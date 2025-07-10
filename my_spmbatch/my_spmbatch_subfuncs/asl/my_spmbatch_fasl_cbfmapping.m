@@ -93,7 +93,7 @@ clear fasldat gmim wmim csfim T1dat corr_T1 GM WM CSF Vasl
 cm0vol = 2*alpha*m0vol*T1a.*(exp(-vol_PLD/T1a)-exp(-(LD+vol_PLD)/T1a));
 cm0vol = reshape(cm0vol,[voldim(1)*voldim(2)*voldim(3),1]);
 
-Vout = Vdeltam(1);
+Vout = Vdeltam;
 rmfield(Vout,'pinfo');
 
 nvols = params.loadmaxvols;
@@ -114,17 +114,17 @@ for ti=1:nvols:tdim
     cbfdata(cbfdata>150) = 0;
 
     for iv=1:nvols
-        Vout.fname = fullfile(ppparams.subperfdir,[ppparams.perf(1).deltamprefix nfname{1} '_cbf.nii']);
-        Vout.descrip = 'my_spmbatch - cbf';
-        Vout.dt = [spm_type('float32'),spm_platform('bigend')];
-        Vout.n = [ti+iv-1 1];
-        Vout = spm_write_vol(Vout,cbfdata(:,:,:,iv));
+        Vout(iv).fname = fullfile(ppparams.subperfdir,[ppparams.perf(1).deltamprefix nfname{1} '_cbf.nii']);
+        Vout(iv).descrip = 'my_spmbatch - cbf';
+        Vout(iv).dt = [spm_type('float32'),spm_platform('bigend')];
+        Vout(iv).n = [ti+iv-1 1];
+        Vout(iv) = spm_write_vol(Vout(iv),cbfdata(:,:,:,iv));
     end
 
-    clear cbfdata Vout
+    clear cbfdata
 end
 
-clear m0vol cm0vol vol_PLD mask
+clear m0vol cm0vol vol_PLD mask Vout Vdeltam
 
 ppparams.perf(1).cbfprefix = ppparams.perf(1).deltamprefix;
 ppparams.perf(1).cbffile = [nfname{1} '_cbf.nii'];
