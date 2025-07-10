@@ -10,7 +10,12 @@ dim = size(funcdat);
 %  Based on Afyouni and Nichols 2018: https://www.sciencedirect.com/science/article/pii/S1053811917311229
     [DVARS,StatDVARS]=DVARSCalc(reshape(funcdat,[dim(1)*dim(2)*dim(3),dim(4)]));
 
+    fname = split(ppparams.func(ne).funcfile,'.nii');
+    save(fullfile(ppparams.subfuncdir,['DVARS_' fname{1} '.mat']),'DVARS','StatDVARS');
+
     glout_idx = find(and(abs(StatDVARS.pvals)<(0.5/dim(4)),abs(StatDVARS.DeltapDvar)>5));
+
+    save(fullfile(ppparams.subfuncdir,['DVARS_badVols_' fname{1} '.mat']),'glout_idx');
   
     if ~isempty(glout_idx)
         % ------------------------
@@ -102,6 +107,8 @@ dim = size(funcdat);
         end
     end
 
+    save(fullfile(ppparams.subfuncdir,['DVARS_replacedVols_' fname{1} '.mat']),'glout_idx');
+  
     % ------------------------
     % Secondly replace bad volumes
     % ------------------------ 
