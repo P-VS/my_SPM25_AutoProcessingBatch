@@ -17,6 +17,8 @@ for ie=ppparams.echoes
     end
 end
 
+ppparams.reffunc = [ppparams.func(1).prefix ppparams.func(1).funcfile ',1'];
+
 %% Slice time correction
 try
     for ie=ppparams.echoes
