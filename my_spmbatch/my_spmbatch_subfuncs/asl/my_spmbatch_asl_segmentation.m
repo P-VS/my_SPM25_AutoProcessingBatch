@@ -124,7 +124,7 @@ else
     params.vbm.do_roi_atlas = false;
     params.vbm.do_surface = false;
 
-    [delfiles,keepfiles] = my_spmbatch_cat12vbm(ppparams,params,delfiles,keepfiles);
+    [delfiles,~] = my_spmbatch_cat12vbm(ppparams,params,delfiles,keepfiles);
 
     ppparams.anat.c1im = ['p1' ppparams.subanat];
     ppparams.anat.c2im = ['p2' ppparams.subanat];
