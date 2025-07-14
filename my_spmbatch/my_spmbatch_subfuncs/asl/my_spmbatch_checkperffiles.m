@@ -164,30 +164,8 @@ namefilters(5).required = true;
 deltamniilist = my_spmbatch_dirfilelist(ppparams.subperfdir,'nii',namefilters,false);
 
 if ~isempty(deltamniilist)
-    prefixlist = split({deltamniilist.name},'sub-');
-    if numel(deltamniilist)==1, prefixlist=prefixlist(1); else prefixlist = prefixlist(:,:,1); end
-    
-    studyprefix = ppparams.func(1).prefix;
-    
-    perfcheck = true;
-    while perfcheck
-        tmp = find(strcmp(prefixlist,studyprefix));
-        if ~isempty(tmp)
-            deltamprefix = studyprefix; 
-            perfcheck = false;
-        else 
-            studyprefix = studyprefix(2:end); 
-            if length(studyprefix) == 0 
-                perfcheck = false; 
-            end
-        end
-    end
-    
-    if ~isempty(tmp)
-        ffile = deltamniilist(tmp).name;
-        fsplit = split(ffile,deltamprefix);
-
-        delete(fsplit{2})
+    for i=1:numel(cbfniilist)
+        delete(fullfile(ppparams.subperfdir,deltamniilist(i).name))
     end
 end
 
@@ -199,29 +177,7 @@ namefilters(5).required = true;
 cbfniilist = my_spmbatch_dirfilelist(ppparams.subperfdir,'nii',namefilters,false);
 
 if ~isempty(cbfniilist)
-    prefixlist = split({cbfniilist.name},'sub-');
-    if numel(cbfniilist)==1, prefixlist=prefixlist(1); else prefixlist = prefixlist(:,:,1); end
-    
-    studyprefix = ppparams.func(1).prefix;
-    
-    perfcheck = true;
-    while perfcheck
-        tmp = find(strcmp(prefixlist,studyprefix));
-        if ~isempty(tmp)
-            cbfprefix = studyprefix; 
-            perfcheck = false;
-        else 
-            studyprefix = studyprefix(2:end); 
-            if length(studyprefix) == 0 
-                perfcheck = false; 
-            end
-        end
-    end
-    
-    if ~isempty(tmp)
-        ffile = cbfniilist(tmp).name;
-        fsplit = split(ffile,cbfprefix);
-        
-        delete(fsplit{2})
+    for i=1:numel(cbfniilist)
+        delete(fullfile(ppparams.subperfdir,cbfniilist(i).name))
     end
 end
