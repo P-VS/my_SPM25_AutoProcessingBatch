@@ -63,17 +63,20 @@ for k = 1:numel(task)
     
                 fprintf(['\nStart preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) ' task ' task{k} '\n'])
         
-                mtlb_cmd = sprintf('"restoredefaultpath;addpath(genpath(''%s''));addpath(genpath(''%s''));addpath(genpath(''%s''));my_spmbatch_run_aslboldpreprocessing(%d,%d,%d,''%s'',''%s'',''%s'');"', ...
-                                            params.GroupICAT_path,params.spm_path,params.my_spmbatch_path,datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,fullfile(datpath,'params.mat'));
                 logfile{i} = fullfile(datpath,['aslbold_preprocess_logfile_' sprintf('%02d',datlist(i,1)) '_' sprintf('%02d',datlist(i,2)) '_' sprintf('%02d',datlist(i,3)) '_' task{k} '.txt']);
         
                 if exist(logfile{i},'file'), delete(logfile{i}); end
                 
                 if ispc
-                    export_cmd = ['set PATH=' fullfile(matlabroot,'bin')];
-                    [status,result] = system(export_cmd);
-                    system_cmd = sprintf(['start matlab -nodesktop -nosplash -r ' mtlb_cmd ' -logfile ' logfile{i}]);
+                    mtlb_cmd = sprintf("restoredefaultpath;addpath(genpath('%s'));addpath(genpath('%s'));addpath(genpath('%s'));my_spmbatch_run_aslboldpreprocessing(%d,%d,%d,'%s','%s','%s');", ...
+                                            params.GroupICAT_path,params.spm_path,params.my_spmbatch_path,datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,fullfile(datpath,'params.mat'));
+                    
+                    [status,result] = system(mtlb_cmd);
+                    system_cmd = sprintf(['start matlab -nodesktop -nosplash -r "%s" -logfile %s'],mtlb_cmd,logfile{i});
                 else
+                    mtlb_cmd = sprintf('"restoredefaultpath;addpath(genpath(''%s''));addpath(genpath(''%s''));addpath(genpath(''%s''));my_spmbatch_run_aslboldpreprocessing(%d,%d,%d,''%s'',''%s'',''%s'');"', ...
+                                            params.GroupICAT_path,params.spm_path,params.my_spmbatch_path,datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,fullfile(datpath,'params.mat'));
+
                     system_cmd = sprintf([fullfile(matlabroot,'bin') '/matlab -nosplash -r ' mtlb_cmd ' -logfile ' logfile{i} ' & ']);
                 end
                 [status,result]=system(system_cmd);
