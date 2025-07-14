@@ -356,7 +356,9 @@ for ic=1:numel(params.contrast)
 
     for ir=1:numel(params.iruns)
         if ~params.add_derivatives; ncondcol = 1; else ncondcol = 3; end
-        subweights = zeros(1,ncondcol*numel(edat{ir}.conditions));
+
+        subweights = zeros(1,ncondcol*numel(numel(edat{ir}.onset)));
+
         if params.add_regressors
             rpdat = load(ppparams.frun(ir).confoundsfile);
             subweights=[subweights zeros(1,numel(rpdat(1,:)))];
@@ -370,7 +372,7 @@ for ic=1:numel(params.contrast)
                 if strcmp(lower(params.contrast(ic).conditions{icn}),lower(edat{ir}.conditions{icn2}.name)); indx=(icn2-1)*ncondcol+1; end
             end
     
-            if indx>0; subweights(indx)=params.contrast(ic).vector(icn); end
+            if indx>0; subweights(indx:indx+(ncondcol-1))=params.contrast(ic).vector(icn); end
         end
 
         subweights = repmat(subweights,1,numel(params.func.echoes));
