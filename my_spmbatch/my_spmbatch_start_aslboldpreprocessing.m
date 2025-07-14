@@ -68,13 +68,12 @@ for k = 1:numel(task)
                 if exist(logfile{i},'file'), delete(logfile{i}); end
                 
                 if ispc
-                    mtlb_cmd = sprintf("restoredefaultpath;addpath(genpath('%s'));addpath(genpath('%s'));addpath(genpath('%s'));my_spmbatch_run_aslboldpreprocessing(%d,%d,%d,'%s','%s','%s');", ...
+                    mtlb_cmd = sprintf("restoredefaultpath;addpath(genpath('%s'));addpath(genpath('%s'));addpath(genpath('%s'));my_spmbatch_run_aslboldpreprocessing(%d,%d,%d,'%s','%s','%s');exit", ...
                                             params.GroupICAT_path,params.spm_path,params.my_spmbatch_path,datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,fullfile(datpath,'params.mat'));
-                    
-                    [status,result] = system(mtlb_cmd);
+                   
                     system_cmd = sprintf(['start matlab -nodesktop -nosplash -r "%s" -logfile %s'],mtlb_cmd,logfile{i});
                 else
-                    mtlb_cmd = sprintf('"restoredefaultpath;addpath(genpath(''%s''));addpath(genpath(''%s''));addpath(genpath(''%s''));my_spmbatch_run_aslboldpreprocessing(%d,%d,%d,''%s'',''%s'',''%s'');"', ...
+                    mtlb_cmd = sprintf('"restoredefaultpath;addpath(genpath(''%s''));addpath(genpath(''%s''));addpath(genpath(''%s''));my_spmbatch_run_aslboldpreprocessing(%d,%d,%d,''%s'',''%s'',''%s'');exit"', ...
                                             params.GroupICAT_path,params.spm_path,params.my_spmbatch_path,datlist(i,1),datlist(i,2),datlist(i,3),task{k},datpath,fullfile(datpath,'params.mat'));
 
                     system_cmd = sprintf([fullfile(matlabroot,'bin') '/matlab -nosplash -r ' mtlb_cmd ' -logfile ' logfile{i} ' & ']);
@@ -119,7 +118,7 @@ for k = 1:numel(task)
                     end
                 end
         
-                if pfinnished==maxruns 
+                if pfinnished>=maxruns 
                     isrunning = false; 
                 else
                     pause(60);
