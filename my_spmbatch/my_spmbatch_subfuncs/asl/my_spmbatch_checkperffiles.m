@@ -173,7 +173,7 @@ if ~isempty(deltamniilist)
     while perfcheck
         tmp = find(strcmp(prefixlist,studyprefix));
         if ~isempty(tmp)
-            ppparams.perf(1).deltamprefix = studyprefix; 
+            deltamprefix = studyprefix; 
             perfcheck = false;
         else 
             studyprefix = studyprefix(2:end); 
@@ -185,8 +185,9 @@ if ~isempty(deltamniilist)
     
     if ~isempty(tmp)
         ffile = deltamniilist(tmp).name;
-        fsplit = split(ffile,ppparams.perf(1).deltamprefix);
-        ppparams.perf(1).deltamfile = fsplit{2};
+        fsplit = split(ffile,deltamprefix);
+
+        delete(fsplit{2})
     end
 end
 
@@ -207,7 +208,7 @@ if ~isempty(cbfniilist)
     while perfcheck
         tmp = find(strcmp(prefixlist,studyprefix));
         if ~isempty(tmp)
-            ppparams.perf(1).cbfprefix = studyprefix; 
+            cbfprefix = studyprefix; 
             perfcheck = false;
         else 
             studyprefix = studyprefix(2:end); 
@@ -219,7 +220,8 @@ if ~isempty(cbfniilist)
     
     if ~isempty(tmp)
         ffile = cbfniilist(tmp).name;
-        fsplit = split(ffile,ppparams.perf(1).cbfprefix);
-        ppparams.perf(1).cbffile = fsplit{2};
+        fsplit = split(ffile,cbfprefix);
+        
+        delete(fsplit{2})
     end
 end

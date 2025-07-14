@@ -128,3 +128,5 @@ clear m0vol cm0vol vol_PLD mask Vout Vdeltam
 
 ppparams.perf(1).cbfprefix = ppparams.perf(1).deltamprefix;
 ppparams.perf(1).cbffile = [nfname{1} '_cbf.nii'];
+
+delfiles{numel(delfiles)+1} = {fullfile(ppparams.subperfdir,[ppparams.perf(1).cbfprefix ppparams.perf(1).cbffile])};    
