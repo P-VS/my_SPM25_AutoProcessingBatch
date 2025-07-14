@@ -164,7 +164,7 @@ namefilters(5).required = true;
 deltamniilist = my_spmbatch_dirfilelist(ppparams.subperfdir,'nii',namefilters,false);
 
 if ~isempty(deltamniilist)
-    for i=1:numel(cbfniilist)
+    for i=1:numel(deltamniilist)
         delete(fullfile(ppparams.subperfdir,deltamniilist(i).name))
     end
 end
