@@ -343,7 +343,7 @@ end
 
 matlabbatch{mbidx}.spm.stats.fmri_est.write_residuals = 0;
 matlabbatch{mbidx}.spm.stats.fmri_est.method.Classical = 1;
-
+  
 mbidx=mbidx+1;
 
 %% Contrast Manager
