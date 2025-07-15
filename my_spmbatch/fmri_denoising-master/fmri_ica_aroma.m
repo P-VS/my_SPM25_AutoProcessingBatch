@@ -7,7 +7,8 @@ function [ppparams,keepfiles,delfiles] = fmri_ica_aroma(ppparams,params,keepfile
 jsondat = jsondecode(fileread(ppparams.func(ppparams.echoes(1)).jsonfile));
 t_r = jsondat.("RepetitionTime");
 
-ica_dir = fullfile(ppparams.subfuncdir, ['ica-dir_' ppparams.task]); % path to ICs computed at previous step
+fname = split(ppparams.func(1).funcfile,'.nii');
+ica_dir = fullfile(ppparams.subfuncdir, ['ica-dir_' fname{1}]); % path to ICs computed at previous step
 
 if ~exist(ica_dir,"dir")
     mkdir(ica_dir);

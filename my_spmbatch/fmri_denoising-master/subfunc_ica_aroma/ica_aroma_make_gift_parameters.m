@@ -1,5 +1,7 @@
 function icaparms_file = ica_aroma_make_gift_parameters(ica_source_file,t_r,n_sessions,mask,comp_est,ppparams)
 
+[ica_source_path,~,~] = fileparts(ica_source_file)
+
 icaparms_file = fullfile(ppparams.subfuncdir,'input_spatial_ica.m');
 
 fid = fopen(icaparms_file,'w');
@@ -107,8 +109,8 @@ fprintf(fid,'%s','};');
 %end
 
 %% Enter directory to put results of analysis
-outdir = fullfile(ppparams.subfuncdir, ['ica-dir_' ppparams.task]);
-fprintf(fid,'\n%s',['outputDir = ''' outdir ''';']);
+%outdir = fullfile(ppparams.subfuncdir, ['ica-dir_' ppparams.task]);
+fprintf(fid,'\n%s',['outputDir = ''' ica_source_path ''';']);
 
 %% Enter Name (Prefix) Of Output Files
 fprintf(fid,'\n%s','prefix = ''ica_aroma'';');
