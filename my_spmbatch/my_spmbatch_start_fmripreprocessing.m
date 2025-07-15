@@ -64,7 +64,8 @@ for k = 1:numel(task)
             for is = 1:maxruns
                 i = (j-1)*params.maxprocesses+is;
     
-                fprintf(['\nStart preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) ' task ' task{k} '\n'])
+                t = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss');
+                fprintf(['\n'  datestr(t) ' : Start preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) ' task ' task{k} '\n'])
         
                 logfile{i} = fullfile(datpath,['fmri_preprocess_logfile_' sprintf(['%0' num2str(params.sub_digits) 'd'],datlist(i,1)) '_' sprintf('%02d',datlist(i,2)) '_' sprintf('%02d',datlist(i,3)) '_' task{k} '.txt']);
         
@@ -105,7 +106,8 @@ for k = 1:numel(task)
                             nlogfname = fullfile(datpath,['error_fmri_preprocess_logfile_' sprintf(['%0' num2str(params.sub_digits) 'd'],datlist(i,1)) '_' sprintf('%02d',datlist(i,2)) '_' sprintf('%02d',datlist(i,3)) '_' task{k} '.txt']);
                             movefile(logfile{i},nlogfname);
     
-                            fprintf(['\nError during preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) ' task ' task{k} '\n'])
+                            t = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss');
+                            fprintf(['\n'  datestr(t) ' : Error during preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) ' task ' task{k} '\n'])
                         elseif ~isempty(test)
                             pfinnished = pfinnished+1;
     
@@ -116,7 +118,8 @@ for k = 1:numel(task)
                                 movefile(logfile{i},nlogfname);
                             end
     
-                            fprintf(['\nDone preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,2)) ' task ' task{k} '\n'])
+                            t = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss');
+                            fprintf(['\n'  datestr(t) ' : Done preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,2)) ' task ' task{k} '\n'])
                         end
                     end
                 end

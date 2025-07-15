@@ -27,7 +27,8 @@ if params.use_parallel
         for is = 1:maxruns
             i = (j-1)*params.maxprocesses+is;
 
-            fprintf(['\nStart VBM preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) '\n'])
+            t = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss');
+            fprintf(['\n'  datestr(t) ' : Start VBM preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) '\n'])
     
             logfile{i} = fullfile(datpath,['logfile_' sprintf(['%0' num2str(params.sub_digits) 'd'],datlist(i,1)) '_' sprintf('%02d',datlist(i,2)) '.txt']);
     
@@ -68,7 +69,8 @@ if params.use_parallel
                         nlogfname = fullfile(datpath,['error_vbm_logfile_' sprintf(['%0' num2str(params.sub_digits) 'd'],datlist(i,1)) '_' sprintf('%02d',datlist(i,2)) '.txt']);
                         movefile(logfile{i},nlogfname);
 
-                        fprintf(['\nError during VBM processing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) '\n'])
+                        t = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss');
+                        fprintf(['\n'  datestr(t) ' : Error during VBM processing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) '\n'])
                     elseif ~isempty(test)
                         pfinnished = pfinnished+1;
 
@@ -79,7 +81,8 @@ if params.use_parallel
                             movefile(logfile{i},nlogfname);
                         end
 
-                        fprintf(['\nDone VBM preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) '\n'])
+                        t = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss');
+                        fprintf(['\n'  datestr(t) ' : Done VBM preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) '\n'])
                     end
                 end
             end

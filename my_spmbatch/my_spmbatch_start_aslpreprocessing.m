@@ -32,7 +32,8 @@ if params.use_parallel
         for is = 1:maxruns
             i = (j-1)*params.maxprocesses+is;
 
-            fprintf(['\nStart preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) '\n'])
+            t = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss');
+            fprintf(['\n'  datestr(t) ' : Start preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) '\n'])
     
             logfile{i} = fullfile(datpath,['asl_preprocess_logfile_' sprintf('%02d',datlist(i,1)) '_' sprintf('%02d',datlist(i,2)) '_' sprintf('%02d',datlist(i,3)) '.txt']);
     
@@ -73,7 +74,8 @@ if params.use_parallel
                         nlogfname = fullfile(datpath,['error_asl_preprocess_logfile_' sprintf('%02d',datlist(i,1)) '_' sprintf('%02d',datlist(i,2)) '_' sprintf('%02d',datlist(i,3)) '.txt']);
                         movefile(logfile{i},nlogfname);
 
-                        fprintf(['\nError during preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) '\n'])
+                        t = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss');
+                        fprintf(['\n'  datestr(t) ' : Error during preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) '\n'])
                     elseif ~isempty(test)
                         pfinnished = pfinnished+1;
 
@@ -84,7 +86,8 @@ if params.use_parallel
                             movefile(logfile{i},nlogfname);
                         end
 
-                        fprintf(['\nDone preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) '\n'])
+                        t = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss');
+                        fprintf(['\n'  datestr(t) ' : Done preprocessing data for subject ' num2str(datlist(i,1)) ' session ' num2str(datlist(i,2)) ' run ' num2str(datlist(i,3)) '\n'])
                     end
                 end
             end
