@@ -196,7 +196,7 @@ mkdir(resultmap)
 jsondat = fileread(ppparams.frun(1).funcjsonfile);
 jsondat = jsondecode(jsondat);
 
-if contains(params.modality,'fasl') && params.reduced_temporal_resolution, tr=params.newTR; else tr = jsondat.RepetitionTime; end
+tr = jsondat.RepetitionTime;
 
 if isfield(jsondat,'SliceTiming')
     SliceTiming = jsondat.SliceTiming;
