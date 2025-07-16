@@ -319,7 +319,7 @@ for ir=1:numel(params.iruns)
     
         matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).multi = {''};
 
-        if contains(params.modality,'fasl') && contains(params.whichfile,'als')
+        if contains(params.modality,'fasl') && contains(params.whichfile,'asl')
             labels = zeros(1,numel(ppfmridat{ir}.sess{ie}.func));
             labels(2:2:end) = 1;
             matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).regress.name = 'labeling';
