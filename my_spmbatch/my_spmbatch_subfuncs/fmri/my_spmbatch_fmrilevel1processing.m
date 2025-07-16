@@ -58,7 +58,8 @@ for ir=1:numel(params.iruns)
     %fMRI data
     
     if contains(params.modality,'fmri'), namefilters(5).name = '_bold'; end
-    if contains(params.modality,'fasl'), namefilters(5).name = '_cbf'; end
+    if contains(params.modality,'fasl') && contains(params.whichfile,'cbf'), namefilters(5).name = '_cbf'; end
+    if contains(params.modality,'fasl') && contains(params.whichfile,'asl'), namefilters(5).name = '_asl'; end
     namefilters(5).required = true;
 
     namefilters(6).name = params.fmri_prefix;
@@ -213,6 +214,7 @@ matlabbatch{1}.spm.stats.fmri_spec.timing.fmri_t0 = 1;
 for ir=1:numel(params.iruns)
     % correct events file for dummy scans if needed
     dummys = floor(params.dummytime/tr);
+    numparams = 0;
     try
         edat{ir} = tdfread(ppparams.frun(ir).functsvfile,'\t');
     catch
@@ -220,6 +222,18 @@ for ir=1:numel(params.iruns)
         edat{ir}.onset = T.onset;
         edat{ir}.duration = T.duration;
         edat{ir}.trial_type = T.trial_type;
+        if params.add_parametricModulation
+            fnames = fieldnames(T);
+            tmp = find(not(or(contains(fnames,'onset'),contains(fnames,'duration'),contains(fnames,'trial_type'))));
+            if ~isemty(tmp)
+                for ifield=1:numel(tmp)
+                    edat{ir}.weight{ifield}.name = fname{tmp(ifield)};
+                    edat{ir}.weight{ifield}.value = getfield(T,fname{tmp(ifield)});
+                end
+                numparams = numel(tmp);
+            else params.add_parametricModulation=false; end
+        else params.add_parametricModulation=false;
+        end
     end
     edat{ir}.onset = edat{ir}.onset-dummys*tr;
     
@@ -233,6 +247,7 @@ for ir=1:numel(params.iruns)
     edat{ir}.onset = edat{ir}.onset(edatorder);
     edat{ir}.duration = edat{ir}.duration(edatorder);
     edat{ir}.trial_type = edat{ir}.trial_type(edatorder,:);
+    if isfield(edat{ir},'weight'), edat{ir}.weight = edat{ir}.weight(edatorder); end
     
     numc=0;
     for trial=1:numel(edat{ir}.onset)
@@ -250,15 +265,31 @@ for ir=1:numel(params.iruns)
             if numc<numel(edat{ir}.conditions)+1
                 edat{ir}.conditions{numc}.onsets = [edat{ir}.conditions{numc}.onsets edat{ir}.onset(trial)];
                 edat{ir}.conditions{numc}.durations = [edat{ir}.conditions{numc}.durations edat{ir}.duration(trial)];
+                if params.add_parametricModulation
+                    edat{ir}.conditions{numc}.weight{ifield}.name = edat{ir}.weight{ifield}.name; 
+                    edat{ir}.conditions{numc}.weight{ifield}.values = [edat{ir}.conditions{numc}.weight{ifield}.values edat{ir}.weight{ifield}.value(trial)]; 
+                end
             else
                 edat{ir}.conditions{numc}.name = strtrim(trial_type);
                 edat{ir}.conditions{numc}.onsets = [edat{ir}.onset(trial)];
                 edat{ir}.conditions{numc}.durations = [edat{ir}.duration(trial)];
+                if params.add_parametricModulation
+                    for ifield=1:numparams
+                        edat{ir}.conditions{numc}.weight{ifield}.name = edat{ir}.weight{ifield}.name; 
+                        edat{ir}.conditions{numc}.weight{ifield}.values = [edat{ir}.weight{ifield}.value(trial)]; 
+                    end
+                end
             end
         else
             edat{ir}.conditions{1}.name = strtrim(trial_type);
             edat{ir}.conditions{1}.onsets = edat{ir}.onset(trial);
             edat{ir}.conditions{1}.durations = edat{ir}.duration(trial);
+            if params.add_parametricModulation
+                for ifield=1:numparams
+                    edat{ir}.conditions{1}.weight{ifield}.name = edat{ir}.weight{ifield}.name; 
+                    edat{ir}.conditions{1}.weight{ifield}.values = edat{ir}.weight{ifield}.value(trial); 
+                end
+            end
             numc=1;
         end
     end
@@ -273,14 +304,29 @@ for ir=1:numel(params.iruns)
             matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).onset = edat{ir}.conditions{nc}.onsets;
             matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).duration = edat{ir}.conditions{nc}.durations;
             matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).tmod = 0;
-            matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).pmod = struct('name', {}, 'param', {}, 'poly', {});
+            if ~params.add_parametricModulation
+                matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).pmod = struct('name', {}, 'param', {}, 'poly', {});
+            else
+                for ifield=1:numparams
+                    matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).pmod(ifield).weight{ifield}.name;
+                    matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).pmod(ifield).param = edat{ir}.conditions{nc}.weight{ifield}.values;
+                    matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).pmod(ifield).poly = 1;
+                end
+            end
             if params.reduced_temporal_resolution, matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).orth = 0; 
             else matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).orth = 1; end
         end
     
         matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).multi = {''};
 
-        matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).regress = struct('name', {}, 'val', {});
+        if contains(params.modality,'fasl') && contains(params.whichfile,'als')
+            labels = zeros(1,numel(ppfmridat{ir}.sess{ie}.func));
+            labels(2:2:end) = 1;
+            matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).regress.name = 'labeling';
+            matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).regress.val = labels;
+        else
+            matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).regress = struct('name', {}, 'val', {});
+        end
     
         matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).multi_reg = {ppparams.frun(ir).confoundsfile};
 
@@ -315,10 +361,10 @@ mask_file = Vmask.fname;
 
 clear fdata mask
 
-if contains(params.modality,'fmri')
-    matlabbatch{1}.spm.stats.fmri_spec.mthresh = 0.0;
-elseif contains(params.modality,'fasl')
-    matlabbatch{1}.spm.stats.fmri_spec.mthresh = -1.0; 
+if contains(params.modality,'fasl') && contains(params.whichfile,'cbf')
+    matlabbatch{1}.spm.stats.fmri_spec.mthresh = -1.0;
+else
+    matlabbatch{1}.spm.stats.fmri_spec.mthresh = 0.8; 
 end
 matlabbatch{1}.spm.stats.fmri_spec.cvi = params.model_serial_correlations;
 matlabbatch{1}.spm.stats.fmri_spec.mask = {Vmask.fname};
@@ -356,6 +402,7 @@ for ic=1:numel(params.contrast)
 
     for ir=1:numel(params.iruns)
         if ~params.add_derivatives; ncondcol = 1; else ncondcol = 3; end
+        if params.add_parametricModulation, ncondcol=ncondcol+numparams; end
 
         subweights = zeros(1,ncondcol*numel(numel(edat{ir}.onset)));
 
@@ -372,7 +419,8 @@ for ic=1:numel(params.contrast)
                 if strcmp(lower(params.contrast(ic).conditions{icn}),lower(edat{ir}.conditions{icn2}.name)); indx=(icn2-1)*ncondcol+1; end
             end
     
-            if indx>0; subweights(indx:indx+(ncondcol-1))=params.contrast(ic).vector(icn); end
+            if params.add_parametricModulation, numsval = ncondcol-numparams; else numsval = ncondcol; end
+            if indx>0; subweights(indx:indx+(numsval-1))=params.contrast(ic).vector(icn); end
         end
 
         subweights = repmat(subweights,1,numel(params.func.echoes));
