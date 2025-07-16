@@ -24,17 +24,17 @@ params.spm_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/M
 
 %% Give the basic input information of your data
 
-datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_OpenNeuro_FT/IndData';  %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_OpenNeuro_FT/IndData'; %'/Volumes/LaCie/UZ_Brussel/ME_fMRI_GE/data'; 
+datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_OpenNeuro_FT/IndData'; %'/Volumes/LaCie/UZ_Brussel/ME_fMRI_GE/data';  %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';
 
-sublist = [1]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [1:13]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1]; %nsessions>0
  
-params.task = {'bilateralfingertapping'}; %{'bilateralfingertapping'}; %{'ME-EmoFaces'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
+params.task = {'bilateralfingertapping'}; %{'PREcog'}; %{'ME-EmoFaces'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
 
-params.analysisname = '_spm25_asl_WS';
-params.modality = 'fasl'; %'fmri' of 'fasl'
+params.analysisname = '_dune2_bold_glm';
+params.modality = 'fmri'; %'fmri' of 'fasl'
 
 params.use_parallel = false; 
 params.maxprocesses = 2; %Best not too high to avoid memory problems
@@ -42,8 +42,8 @@ params.loadmaxvols = 100; %to reduce memory load, the preprocessing can be split
 params.keeplogs = false;
 
 %% fMRI data parameters
-    params.preprocfmridir = 'preproc_spm25_cbf'; %'preproc_bold_dune'; %'preproc_func_ME-EmoFaces_dune'; %directory with the preprocessed fMRI data
-    params.fmri_prefix = 'swdavfre'; %'swacdfre'; %'swacdure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
+    params.preprocfmridir = 'preproc_dune2_bold'; %'preproc_bold_dune'; %'preproc_func_ME-EmoFaces_dune'; %directory with the preprocessed fMRI data
+    params.fmri_prefix = 'swcdlavfre'; %'swacdfre'; %'swacdure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
     
     params.dummytime = 0; %only if the timings in the _events.tsv file should be corrected for dummy scans
         
@@ -60,15 +60,19 @@ params.keeplogs = false;
     
     % For ME-fMRI
     params.func.meepi = true; %true if echo number is in filename
-    params.func.echoes = [1:4]; %the index of echoes in ME-fMRI used in the analysis. If meepi=false, echoes=[1]. 
+    params.func.echoes = [1:3]; %the index of echoes in ME-fMRI used in the analysis. If meepi=false, echoes=[1]. 
+
+    % For Functional ASL 
+    params.whichfile = 'asl'; %do processing on 'asl' file or on 'cbf' data (default='cbf')
 
 %% SPM first level analysis parameters
-    params.analysis_type = 'within_subject'; % 'GLM' or 'within_subject' (default='GLM'), 'within_subject' only possible for 'fasl'
+    params.analysis_type = 'GLM'; % 'GLM' or 'within_subject' (default='GLM'), 'within_subject' only possible for 'fasl'
 
     params.confounds_prefix = 'rp_e'; %confounds file of form [confounds_prefix 'sub-ii_task-... .txt']
+    params.add_parametricModulation = false; %use the weights in events.tsv for parametric modultion
     params.add_regressors = false; %if data not denoised set true otherwhise false 
     params.add_derivatives = false; %add temmperal and dispertion derivatives to the GLM (default=false)
-    params.optimize_HRF = true; %Optimize HRF parameters (peak time and duration) to the data using the TEDM toolbox (default=true)
+    params.optimize_HRF = false; %Optimize HRF parameters (peak time and duration) to the data using the TEDM toolbox (only possible for BOLD)
     params.use_ownmask = true;
     params.model_serial_correlations = 'AR(1)'; %'AR(1) for fmri, 'none' for fasl
     params.hpf = 128; %default 128 but changed to tr*(nvol-1) if already filtered (f in prefix)
@@ -94,6 +98,12 @@ params.keeplogs = false;
     %e.g A contrast between conditions is given as
     %   contrast(i).conditions={'condition 1','condition 2'};
     %   contrast(i).vector=[1 -1];
+
+    %params.contrast(1).conditions = {'Go_Left','Go_Right','NoGo_Left','NoGo_Right'};
+    %params.contrast(1).vector = [1,1,-1,-1];
+
+    %params.contrast(2).conditions = {'Go_Left','Go_Right','NoGo_Left','NoGo_Right'};
+    %params.contrast(2).vector = [-1,-1,1,1];
 
     params.contrast(1).conditions = {'Finger'};
     params.contrast(1).vector = [1];

@@ -10,6 +10,9 @@ if params.reduced_temporal_resolution
     params.analysis_type = 'within_subject';
 end
 
+if contains(params.modality,'fasl'), params.add_derivatives = true; end
+if params.add_regressors || params.add_derivatives || params.add_parametricModulation || contains(params.modality,'fasl'), params.optimize_HRF=false; end
+
 params.use_echoes_as_sessions = false;
 if params.func.meepi && ~contains(params.fmri_prefix,'c'), params.use_echoes_as_sessions = true; end
 if params.func.meepi && contains(params.fmri_prefix,'c'), params.func.echoes = [1]; end
