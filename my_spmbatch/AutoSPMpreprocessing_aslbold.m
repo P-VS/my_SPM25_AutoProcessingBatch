@@ -38,8 +38,8 @@ params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject fold
 
 nsessions = [1]; %nsessions>0
 
-params.func_save_folder = 'preproc_spm25_bold'; %name of the folder to save the preprocessed bold data
-params.perf_save_folder = 'preproc_spm25_cbf'; %name of the folder to save the preprocessed asl data
+params.func_save_folder = 'preproc_dune_bold'; %name of the folder to save the preprocessed bold data
+params.perf_save_folder = 'preproc_dune_asl'; %name of the folder to save the preprocessed asl data
 
 task ={'bilateralfingertapping'};
 
@@ -63,20 +63,14 @@ params.preprocess_asl = true; %(default=true)
 
 %% FMRI parameters
 params.func.meepi = true; %true if echo number is in filename (default=true)
-params.func.echoes = [1:4]; %the index of echoes in ME-fMRI used in the analysis. If meepi=false, echoes=[1]. 
+params.func.echoes = [1:3]; %the index of echoes in ME-fMRI used in the analysis. If meepi=false, echoes=[1]. 
 
 params.func.dummytime = 0; %time in seconds (default=2*TR)
 
 params.func.pepolar = false; %true if fmap scan exist otherwise false (default=true)
 
 %% ASL Parameters
-params.asl.temp_resolution = 'original'; %tempporal resolution of the gennerated CBF series
-% 'original' : temporal resolution of the original series
-% 'only_mean' : only 1 CBF image (mean over the whole series
-% 'reduced' : the mean CBF over a few timepoints (e.g. per minute) 
-params.asl.dt = 40; %new temporal resolution in seconds if params.asl.temp_resolution = 'reduced'
-
-params.asl.splitaslbold = 'meica'; %'meica' or 'dune' (default='meica') 
+params.asl.splitaslbold = 'dune'; %'meica' or 'dune' (default='meica') 
 %'meica': after filtering, ME-ICA (tedana based)
 %'dune': experimental splitting method
 
@@ -98,7 +92,7 @@ params.asl.splitaslbold = 'meica'; %'meica' or 'dune' (default='meica')
 
     %ASL data
     params.asl.isM0scan = 'last'; %The M0 image is by defaullt the last volume @GE (set 'last')
-    params.asl.LabelingDuration = 1.450; % in seconds (parameter is ignored if LabelingDuration is in json file)
+    params.asl.LabelingDuration = 1.525; % in seconds (parameter is ignored if LabelingDuration is in json file)
     params.asl.PostLabelDelay = 1.525; % in seconds (parameter is ignored if PostLabelDelay is in json file)
 
     params.asl.GMWM = 'anat'; %wich data used for segmentation maps 'anat', 'M0asl' (default='anat')

@@ -4,14 +4,10 @@ if ~params.func.meepi, params.func.echoes = [1]; end
 if ~params.func.mruns, params.func.runs = [1]; end
 if ~contains(params.modality,'fmri'), params.func.echoes = [1]; end
 if ~contains(params.modality,'fasl'), params.reduced_temporal_resolution = false; end
-if params.reduced_temporal_resolution
-    params.optimize_HRF=false; 
-    params.add_derivatives = false;
-    params.analysis_type = 'within_subject';
-end
 
 if contains(params.modality,'fasl'), params.add_derivatives = true; end
-if params.add_regressors || params.add_derivatives || params.add_parametricModulation || contains(params.modality,'fasl'), params.optimize_HRF=false; end
+if params.add_regressors || params.add_derivatives || params.add_parametricModulation || contains(params.modality,'fasl'), params.optimize_HRF=false; 
+elseif params.optimize_HRF; params.add_derivatives = false; end
 
 params.use_echoes_as_sessions = false;
 if params.func.meepi && ~contains(params.fmri_prefix,'c'), params.use_echoes_as_sessions = true; end
@@ -33,8 +29,6 @@ else
     params.oruns = [1];
     params.iruns = [1];
 end
-
-if params.optimize_HRF; params.add_derivatives = false; end
 
 save(fullfile(datpath,'params.mat'),'params')
 
