@@ -12,6 +12,32 @@ if params.func.mruns, namefilters(3).required = true; else namefilters(3).requir
 namefilters(4).name = ['task-' ppparams.task];
 namefilters(4).required = true;
 
+%% deltam data
+
+namefilters(5).name = '_deltam';
+namefilters(5).required = true;
+
+deltamniilist = my_spmbatch_dirfilelist(ppparams.subperfdir,'nii',namefilters,false);
+
+if ~isempty(deltamniilist)
+    for i=1:numel(deltamniilist)
+        delete(fullfile(ppparams.subperfdir,deltamniilist(i).name))
+    end
+end
+
+%% CBF data
+
+namefilters(5).name = '_cbf';
+namefilters(5).required = true;
+
+cbfniilist = my_spmbatch_dirfilelist(ppparams.subperfdir,'nii',namefilters,false);
+
+if ~isempty(cbfniilist)
+    for i=1:numel(cbfniilist)
+        delete(fullfile(ppparams.subperfdir,cbfniilist(i).name))
+    end
+end
+
 %% asl data
 
 namefilters(5).name = '_asl';
@@ -28,7 +54,7 @@ end
 tmp = find(contains({aslniilist.name},'_echo-1'));
 if ~isempty(tmp), aslniilist = aslniilist(tmp); 
 else 
-    tmp = find(contains({aslniilist.name(1:2)},'cd'));
+    tmp = find(and(contains({aslniilist.name},'cd'),not(or(contains({aslniilist.name},'wcd'),contains({aslniilist.name},'mean_')))));
     if ~isempty(tmp), aslniilist = aslniilist(tmp); end
 end
 
@@ -153,31 +179,5 @@ else
         
         tmp=find(contains(prefixlist,'rp3e'));
         if ~isempty(tmp), ppparams.perf(1).c3m0scanfile = anatniilist(tmp).name; end
-    end
-end
-
-%% deltam data
-
-namefilters(5).name = '_deltam';
-namefilters(5).required = true;
-
-deltamniilist = my_spmbatch_dirfilelist(ppparams.subperfdir,'nii',namefilters,false);
-
-if ~isempty(deltamniilist)
-    for i=1:numel(deltamniilist)
-        delete(fullfile(ppparams.subperfdir,deltamniilist(i).name))
-    end
-end
-
-%% CBF data
-
-namefilters(5).name = '_cbf';
-namefilters(5).required = true;
-
-cbfniilist = my_spmbatch_dirfilelist(ppparams.subperfdir,'nii',namefilters,false);
-
-if ~isempty(cbfniilist)
-    for i=1:numel(cbfniilist)
-        delete(fullfile(ppparams.subperfdir,cbfniilist(i).name))
     end
 end

@@ -82,54 +82,35 @@ clear ncondat nlabdat fasldata
 
 nfname = split(ppparams.perf(1).aslfile,'_asl');
 
-if contains(params.asl.temp_resolution,'original')
-    Vout = Vasl(1);
-    rmfield(Vout,'pinfo');
-    for iv=1:voldim(4)
-        Vout.fname = fullfile(ppparams.subperfdir,[ppparams.perf(1).aslprefix nfname{1} '_deltam.nii']);
-        Vout.descrip = 'my_spmbatch - deltam';
-        Vout.dt = [spm_type('float32'),spm_platform('bigend')];
-        Vout.n = [iv 1];
-        Vout = spm_write_vol(Vout,deltamdata(:,:,:,iv));
-    end
-elseif contains(params.asl.temp_resolution,'reduced')
-    nvols = floor(params.asl.dt/tr); 
-    
-    rdeltamdata = zeros([voldim(1),voldim(2),voldim(3),floor(voldim(4)/nvols)]);
-
-    Vout = Vasl(1);
-    rmfield(Vout,'pinfo');
-    for iv=1:floor(voldim(4)/nvols)
-        minvol=max(2,(iv-1)*nvols+1);
-        maxvol=min(iv*nvols,voldim(4)-1);
-
-        rdeltamdata = mean(deltamdata(:,:,:,minvol:maxvol),4);
-
-        Vout.fname = fullfile(ppparams.subperfdir,[ppparams.perf(1).aslprefix nfname{1} '_deltam.nii']);
-        Vout.descrip = 'my_spmbatch - deltam';
-        Vout.dt = [spm_type('float32'),spm_platform('bigend')];
-        Vout.n = [iv 1];
-        Vout = spm_write_vol(Vout,rdeltamdata);
-
-        clear rdeltamdata
-    end
-elseif contains(params.asl.temp_resolution,'only_mean')
-    mdeltamdata = mean(deltamdata(:,:,:,2:voldim(4)-1),4);
-
-    Vout = Vasl(1);
-    rmfield(Vout,'pinfo');
+Vout = Vasl(1);
+rmfield(Vout,'pinfo');
+for iv=1:voldim(4)
     Vout.fname = fullfile(ppparams.subperfdir,[ppparams.perf(1).aslprefix nfname{1} '_deltam.nii']);
     Vout.descrip = 'my_spmbatch - deltam';
     Vout.dt = [spm_type('float32'),spm_platform('bigend')];
-    Vout.n = [1 1];
-    Vout = spm_write_vol(Vout,mdeltamdata);
-
-    clear mdeltam
+    Vout.n = [iv 1];
+    Vout = spm_write_vol(Vout,deltamdata(:,:,:,iv));
 end
+
+clear Vout
+
+mdeltamdata = mean(deltamdata(:,:,:,2:voldim(4)-1),4);
+
+Vout = Vasl(1);
+rmfield(Vout,'pinfo');
+Vout.fname = fullfile(ppparams.subperfdir,['mean_' ppparams.perf(1).aslprefix nfname{1} '_deltam.nii']);
+Vout.descrip = 'my_spmbatch - deltam';
+Vout.dt = [spm_type('float32'),spm_platform('bigend')];
+Vout.n = [1 1];
+Vout = spm_write_vol(Vout,mdeltamdata);
+
+clear mdeltam
 
 clear deltamdata
 
+ppparams.perf(1).meandeltam = ['mean_' ppparams.perf(1).aslprefix nfname{1} '_deltam.nii'];
 ppparams.perf(1).deltamprefix = ppparams.perf(1).aslprefix;
 ppparams.perf(1).deltamfile = [nfname{1} '_deltam.nii'];
 
 delfiles{numel(delfiles)+1} = {fullfile(ppparams.subperfdir,[ppparams.perf(1).aslprefix nfname{1} '_deltam.nii'])};
+delfiles{numel(delfiles)+1} = {fullfile(ppparams.subperfdir,['mean_' ppparams.perf(1).aslprefix nfname{1} '_deltam.nii'])};

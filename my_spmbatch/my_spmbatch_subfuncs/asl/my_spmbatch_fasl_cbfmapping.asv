@@ -124,11 +124,9 @@ for ti=1:nvols:tdim
     clear cbfdata
 end
 
-clear  Vout Vdeltam
-
 %% CBF calculations mean deltaM
-Vmeandm=spm_vol(fullfile(ppparams.subperfdir,ppparams.perf(1).meandeltam));
-meand_nfname = split(ppparams.perf(1).meandeltam,'_deltam');
+Vmeandm=spm_vol(ppparams.perf(1).meandeltam));
+nfname = split(ppparams.perf(1).meandeltam,'_deltam');
 
 cbfdata = spm_read_vols(Vmeandm);
 cbfdata = reshape(cbfdata,[voldim(1)*voldim(2)*voldim(3),1]);
@@ -142,19 +140,17 @@ cbfdata(cbfdata<-40) = 0;
 cbfdata(cbfdata>150) = 0;
 
 Vout = Vmeandm;
-Vout.fname = fullfile(ppparams.subperfdir,[meand_nfname{1} '_cbf.nii']);
+Vout.fname = fullfile(ppparams.subperfdir,[ppparams.perf(1).deltamprefix nfname{1} '_cbf.nii']);
 Vout.descrip = 'my_spmbatch - cbf';
 Vout.dt = [spm_type('float32'),spm_platform('bigend')];
-Vout.n = [1 1];
+Vout.n = [11];
 Vout = spm_write_vol(Vout,cbfdata);
 
-clear cbfdata Vout Vmean0
+clear cbfdata
 
-clear m0vol cm0vol vol_PLD mask
+clear m0vol cm0vol vol_PLD mask Vout Vdeltam
 
-ppparams.perf(1).meancbf = [meand_nfname{1} '_cbf.nii'];
 ppparams.perf(1).cbfprefix = ppparams.perf(1).deltamprefix;
 ppparams.perf(1).cbffile = [nfname{1} '_cbf.nii'];
 
 delfiles{numel(delfiles)+1} = {fullfile(ppparams.subperfdir,[ppparams.perf(1).cbfprefix ppparams.perf(1).cbffile])};    
-delfiles{numel(delfiles)+1} = {fullfile(ppparams.subperfdir,ppparams.perf(1).meancbf)};   

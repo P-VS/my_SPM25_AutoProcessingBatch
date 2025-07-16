@@ -75,16 +75,22 @@ Vmcbf = spm_vol(fullfile(ppparams.subperfdir,ppparams.perf(1).wmcbffile));
 
 mcbfdat = spm_read_vols(Vmcbf);
 
-smcbfdat = my_spmbatch_smooth(mcbfdat,Vmcbf,[],[params.func.smoothfwhm params.func.smoothfwhm params.func.smoothfwhm],0);
+Vout = Vasl(ti:ti+nvols-1);
+for iv=1:nvols
+    smcbfdat = my_spmbatch_smooth(mcbfdat(:,:,:,iv),Vasl(ti),[],[params.func.smoothfwhm params.func.smoothfwhm params.func.smoothfwhm],0);
 
-Vout = Vmcbf;
-Vout.fname = fullfile(ppparams.subperfdir,['s' ppparams.perf(1).wmcbffile]);
-Vout.descrip = 'my_spmbatch - smooth';
-Vout.n = [1 1];
-Vout = spm_write_vol(Vout,smcbfdat);
+    Vout(iv).fname = fullfile(ppparams.subperfdir,['s' ppparams.perf(1).waslfile]);
+    Vout(iv).descrip = 'my_spmbatch - smooth';
+    Vout(iv).n = [ti+iv-1 1];
+    Vout(iv) = spm_write_vol(Vout(iv),sasldat);
 
-clear sasldat Vout asldat Vmcbf
+    clear sasldat
+end
 
-keepfiles{numel(keepfiles)+1} = {fullfile(ppparams.subperfdir,['s' ppparams.perf(1).wmcbffile])};    
+clear Vout asldat
 
-ppparams.perf(1).swmcbffile = ['s' ppparams.perf(1).wmcbffile];
+keepfiles{numel(keepfiles)+1} = {fullfile(ppparams.subperfdir,['s' ppparams.perf(1).waslfile])};    
+
+ppparams.perf(1).saslfile = ['s' ppparams.perf(1).waslfile];
+
+clear Vasl
