@@ -419,8 +419,7 @@ for ic=1:numel(params.contrast)
                 if strcmp(lower(params.contrast(ic).conditions{icn}),lower(edat{ir}.conditions{icn2}.name)); indx=(icn2-1)*ncondcol+1; end
             end
     
-            if params.add_parametricModulation, numsval = ncondcol-numparams; else numsval = ncondcol; end
-            if indx>0; subweights(indx:indx+(numsval-1))=params.contrast(ic).vector(icn); end
+            if indx>0; subweights(indx)=params.contrast(ic).vector(icn); end
         end
 
         subweights = repmat(subweights,1,numel(params.func.echoes));
