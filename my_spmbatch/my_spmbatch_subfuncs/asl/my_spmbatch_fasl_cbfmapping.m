@@ -134,7 +134,7 @@ cbfdata = spm_read_vols(Vmeandm);
 cbfdata = reshape(cbfdata,[voldim(1)*voldim(2)*voldim(3),1]);
 
 cbfdata = lambda*6000*cbfdata;
-cbfdata(cm0vol>0,:) = cbfdata(cm0vol>0,:)./cm0vol(cm0vol>0);
+cbfdata(cm0vol>0) = cbfdata(cm0vol>0)./cm0vol(cm0vol>0);
 cbfdata = reshape(cbfdata,[voldim(1),voldim(2),voldim(3)]);
 
 cbfdata = cbfdata.*mask;
@@ -148,9 +148,7 @@ Vout.dt = [spm_type('float32'),spm_platform('bigend')];
 Vout.n = [1 1];
 Vout = spm_write_vol(Vout,cbfdata);
 
-clear cbfdata Vout Vmean0
-
-clear m0vol cm0vol vol_PLD mask
+clear cbfdata Vout Vmean0 m0vol cm0vol vol_PLD mask
 
 ppparams.perf(1).meancbf = [meand_nfname{1} '_cbf.nii'];
 ppparams.perf(1).cbfprefix = ppparams.perf(1).deltamprefix;

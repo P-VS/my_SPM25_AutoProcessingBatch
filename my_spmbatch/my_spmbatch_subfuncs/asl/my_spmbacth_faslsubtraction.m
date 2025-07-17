@@ -21,6 +21,7 @@ ppparams.asl.conidx = conidx;
 ppparams.asl.labidx = labidx;
 
 deltamdata = zeros([voldim(1)*voldim(2)*voldim(3),voldim(4)]);
+mdeltamdata = zeros([voldim(1)*voldim(2)*voldim(3),1]);
 
 fasldata = reshape(fasldata,[voldim(1)*voldim(2)*voldim(3),voldim(4)]);
 
@@ -75,8 +76,10 @@ for p=1:voldim(4)
 end
 
 deltamdata(mask>0,:) = (ncondat-nlabdat);
+mdeltamdata(mask>0,:) = mean(ncondat,2)-mean(nlabdat,2);
 
 deltamdata = reshape(deltamdata,[voldim(1),voldim(2),voldim(3),voldim(4)]);
+mdeltamdata = reshape(mdeltamdata,[voldim(1),voldim(2),voldim(3)]);
 
 clear ncondat nlabdat fasldata
 
@@ -92,10 +95,6 @@ for iv=1:voldim(4)
     Vout = spm_write_vol(Vout,deltamdata(:,:,:,iv));
 end
 
-clear Vout
-
-mdeltamdata = mean(deltamdata(:,:,:,2:voldim(4)-1),4);
-
 Vout = Vasl(1);
 rmfield(Vout,'pinfo');
 Vout.fname = fullfile(ppparams.subperfdir,['mean_' ppparams.perf(1).aslprefix nfname{1} '_deltam.nii']);
@@ -104,13 +103,11 @@ Vout.dt = [spm_type('float32'),spm_platform('bigend')];
 Vout.n = [1 1];
 Vout = spm_write_vol(Vout,mdeltamdata);
 
-clear mdeltam
-
-clear deltamdata
+clear Vout deltamdata mdeltamdata
 
 ppparams.perf(1).meandeltam = ['mean_' ppparams.perf(1).aslprefix nfname{1} '_deltam.nii'];
 ppparams.perf(1).deltamprefix = ppparams.perf(1).aslprefix;
 ppparams.perf(1).deltamfile = [nfname{1} '_deltam.nii'];
 
 delfiles{numel(delfiles)+1} = {fullfile(ppparams.subperfdir,[ppparams.perf(1).aslprefix nfname{1} '_deltam.nii'])};
-delfiles{numel(delfiles)+1} = {fullfile(ppparams.subperfdir,['mean_' ppparams.perf(1).aslprefix nfname{1} '_deltam.nii'])};
+delfiles{numel(delfiles)+1} = {fullfile(ppparams.subperfdir,ppparams.perf(1).meandeltam)};
