@@ -24,9 +24,11 @@ if isfield(jsondat,'PostLabelDelay'), PLD = jsondat.PostLabelDelay; else PLD = p
 if isfield(jsondat,'SliceTiming'), SliceTimes = jsondat.SliceTiming; else SliceTimes = []; end
 if ~(numel(SliceTimes)==voldim(3)), SliceTimes = []; end
 
+isfield(jsondat,'MultibandAccellerationFactor')
 if isempty(SliceTimes)
-    if isfield(jsondat,'MultibandAccelerationFactor')
-        hbf = jsondat.MultibandAccelerationFactor; 
+    if isfield(jsondat,'MultibandAccelerationFactor') || isfield(jsondat,'MultibandAccellerationFactor')
+        if isfield(jsondat,'MultibandAccelerationFactor'), hbf = jsondat.MultibandAccelerationFactor; 
+        else hbf = jsondat.MultibandAccellerationFactor; end
         nslex = ceil(voldim(3)/hbf);
         isl = zeros([1,nslex]);
         isl(1:2:nslex)=[0:1:(nslex-1)/2];
@@ -42,14 +44,19 @@ if isempty(SliceTimes)
     TA = tr-LD-PLD;
     SliceTimes = isl*TA/nslex;
 else
-    TA = tr-LD-PLD;
-
-    SliceTimes = SliceTimes * TA/tr;
+    if max(SliceTimes)>(tr-LD-PLD)
+        TA = tr-LD-PLD;
+    
+        SliceTimes = SliceTimes * TA/tr;
+    end
 end
 
-SlicePLD = PLD+SliceTimes;
+vol_PLD = zeros(voldim(1),voldim(2),voldim(3));
+for is=1:voldim(3)
+    vol_PLD(:,:,is) = SliceTimes(is);
+end
 
-vol_PLD = reshape(repmat(SlicePLD,[voldim(1)*voldim(2),1]),voldim);
+reshape(vol_PLD,[voldim(1)*voldim(2),voldim(3)]);
 
 %% Correct M0 for T1 effects
 % The T1 values used, are the averaged T1 values reported in the review of 
@@ -66,6 +73,12 @@ fasldata = spm_read_vols(Vasl);
 conidx = 2:2:numel(Vasl);
 
 m0vol = mean(fasldata(:,:,:,conidx),4);
+
+%Vm0=spm_vol(fullfile(ppparams.subperfdir,[ppparams.perf(1).m0scanprefix ppparams.perf(1).m0scanfile]));
+%m0vol = spm_read_vols(Vm0);
+
+%scfactor = mean(m0aslvol,'all') / mean(m0vol,'all');
+%m0vol = m0vol .* scfactor;
 
 mask = my_spmbatch_mask(m0vol);
 
@@ -87,7 +100,8 @@ corr_T1 = zeros(voldim);
 corr_T1(T1dat>0) = 1 ./ (1-exp(-tr./T1dat(T1dat>0)));
 m0vol = m0vol .* corr_T1;
 
-clear fasldat gmim wmim csfim T1dat corr_T1 GM WM CSF Vasl
+%clear m0aslvol gmim wmim csfim T1dat corr_T1 GM WM CSF Vm0 Vasl
+clear  gmim wmim csfim T1dat corr_T1 GM WM CSF %Vm0 
 
 %% CBF calculations series
 cm0vol = 2*alpha*m0vol*T1a.*(exp(-vol_PLD/T1a)-exp(-(LD+vol_PLD)/T1a));
