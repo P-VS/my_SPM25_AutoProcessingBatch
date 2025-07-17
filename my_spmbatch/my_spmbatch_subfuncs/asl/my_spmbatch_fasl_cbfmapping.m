@@ -53,7 +53,7 @@ end
 
 vol_PLD = zeros(voldim(1),voldim(2),voldim(3));
 for is=1:voldim(3)
-    vol_PLD(:,:,is) = SliceTimes(is);
+    vol_PLD(:,:,is) = PLD+SliceTimes(is);
 end
 
 reshape(vol_PLD,[voldim(1)*voldim(2),voldim(3)]);
