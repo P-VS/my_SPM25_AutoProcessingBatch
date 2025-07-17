@@ -314,8 +314,7 @@ for ir=1:numel(params.iruns)
                     matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).pmod(ifield).poly = 1;
                 end
             end
-            if params.reduced_temporal_resolution, matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).orth = 0; 
-            else matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).orth = 1; end
+            matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).cond(nc).orth = 1;
         end
     
         matlabbatch{1}.spm.stats.fmri_spec.sess(nsess).multi = {''};
