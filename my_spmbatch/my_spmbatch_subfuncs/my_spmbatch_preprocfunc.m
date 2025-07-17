@@ -51,7 +51,7 @@ try
                     end
                     
                     if isempty(ppparams.SliceTimes)
-                        if isfield(jsondat,'MultibandAccelerationFactor')
+                        if isfield(jsondat,'MultibandAccelerationFactor') || isfield(jsondat,'MultibandAccellerationFactor')
                             hbf = jsondat.MultibandAccelerationFactor; 
                             nslex = ceil(nsl/hbf);
                             isl = zeros([1,nslex]);
@@ -73,9 +73,11 @@ try
     
                         ppparams.SliceTimes = isl*TA/nslex;
                     elseif params.func.isaslbold
-                        TA = ppparams.tr-params.asl.LabelingDuration-params.asl.PostLabelDelay;
-    
-                        ppparams.SliceTimes = ppparams.SliceTimes * TA/ppparams.tr;
+                        if max(ppparams.SliceTimes)>(ppparams.tr-params.asl.LabelingDuration-params.asl.PostLabelDelay)
+                            TA = ppparams.tr-params.asl.LabelingDuration-params.asl.PostLabelDelay;
+        
+                            ppparams.SliceTimes = ppparams.SliceTimes * TA/ppparams.tr;
+                        end
                     end
     
                     if params.func.isaslbold, ppparams.SliceTimes = params.asl.LabelingDuration+params.asl.PostLabelDelay+ppparams.SliceTimes; end
