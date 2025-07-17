@@ -74,12 +74,6 @@ conidx = 2:2:numel(Vasl);
 
 m0vol = mean(fasldata(:,:,:,conidx),4);
 
-%Vm0=spm_vol(fullfile(ppparams.subperfdir,[ppparams.perf(1).m0scanprefix ppparams.perf(1).m0scanfile]));
-%m0vol = spm_read_vols(Vm0);
-
-%scfactor = mean(m0aslvol,'all') / mean(m0vol,'all');
-%m0vol = m0vol .* scfactor;
-
 mask = my_spmbatch_mask(m0vol);
 
 GM = spm_vol(fullfile(ppparams.subperfdir,ppparams.perf(1).c1m0scanfile));
@@ -100,8 +94,7 @@ corr_T1 = zeros(voldim);
 corr_T1(T1dat>0) = 1 ./ (1-exp(-tr./T1dat(T1dat>0)));
 m0vol = m0vol .* corr_T1;
 
-%clear m0aslvol gmim wmim csfim T1dat corr_T1 GM WM CSF Vm0 Vasl
-clear  gmim wmim csfim T1dat corr_T1 GM WM CSF %Vm0 
+clear fasldata gmim wmim csfim T1dat corr_T1 GM WM CSF Vm0 Vasl
 
 %% CBF calculations series
 cm0vol = 2*alpha*m0vol*T1a.*(exp(-vol_PLD/T1a)-exp(-(LD+vol_PLD)/T1a));
