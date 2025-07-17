@@ -33,13 +33,13 @@ params.GroupICAT_path = '/Users/accurad/Library/Mobile Documents/com~apple~Cloud
 
 datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_OpenNeuro_FT/IndData';
 
-sublist = [1];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [1:13];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1]; %nsessions>0
 
-params.func_save_folder = 'preproc_dune_bold'; %name of the folder to save the preprocessed bold data
-params.perf_save_folder = 'preproc_dune_asl'; %name of the folder to save the preprocessed asl data
+params.func_save_folder = 'preproc_dune_wf_bold'; %name of the folder to save the preprocessed bold data
+params.perf_save_folder = 'preproc_dune_wf_asl'; %name of the folder to save the preprocessed asl data
 
 task ={'bilateralfingertapping'};
 
@@ -47,8 +47,8 @@ task ={'bilateralfingertapping'};
 params.func.mruns = false; %true if run number is in filename
 params.func.runs = [1]; %the index of the runs (in filenames run-(index))
 
-%% If parallel processing is posible (only tested on Mac!!)
-params.use_parallel = false; %(default=false)
+%% Parallel processing and memory reduction
+params.use_parallel = true; %(default=false)
 params.maxprocesses = 2; %Best not too high to avoid memory problems %(default=2)
 params.loadmaxvols = 100; %to reduce memory load, the preprocessing can be split in smaller blocks (default = 100)
 params.keeplogs = false; %(default=false)
@@ -58,12 +58,12 @@ params.save_intermediate_results = true; %clean up the directory by deleting unn
 
 %% Which analyses to do
 params.preprocess_anatomical = false;  %(default=true)  
-params.preprocess_functional = false; %(default=true)
+params.preprocess_functional = true; %(default=true)
 params.preprocess_asl = true; %(default=true)
 
 %% FMRI parameters
 params.func.meepi = true; %true if echo number is in filename (default=true)
-params.func.echoes = [1:3]; %the index of echoes in ME-fMRI used in the analysis. If meepi=false, echoes=[1]. 
+params.func.echoes = [1:4]; %the index of echoes in ME-fMRI used in the analysis. If meepi=false, echoes=[1]. 
 
 params.func.dummytime = 0; %time in seconds (default=2*TR)
 
