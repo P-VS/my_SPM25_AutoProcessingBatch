@@ -9,6 +9,7 @@ ppparams.run = run;
 ppparams.task = task;
 ppparams.use_parallel = params.use_parallel;
 ppparams.save_intermediate_results = params.save_intermediate_results;
+ppparams.error = false;
 
 %% Search for the subject/session folder
 
@@ -25,6 +26,7 @@ if ~isfolder(ppparams.subpath), ppparams.subpath = fullfile(datpath,ppparams.sub
 if ~isfolder(ppparams.subpath)
     fprintf(['No data folder for subject ' num2str(sub) ' session ' num2str(ses) '\n'])
     fprintf('\nPP_Error\n');
+    ppparams.error = true;
     return
 end
 
@@ -33,6 +35,7 @@ ppparams.subfuncdir = fullfile(ppparams.subpath,'func');
 if ~isfolder(ppparams.subfuncdir)
     fprintf(['No func data folder found for subject ' num2str(sub) ' session ' num2str(ses)])
     fprintf('\nPP_Error\n');
+    ppparams.error = true;
     return
 end
 
@@ -61,19 +64,22 @@ if params.preprocess_asl
     if ~isfolder(ppparams.subfuncdir)
         fprintf(['No perf data folder found for subject ' num2str(sub) ' session ' num2str(ses)])
         fprintf('\nPP_Error\n');
+        ppparams.error = true;
         return
     end
     
-    % Search for the data files
-    ppparams = my_spmbatch_checkperffiles(ppparams,params);
-
-    if contains(params.asl.splitaslbold,'meica') && ~contains(ppparams.perf(1).aslprefix,'d')
-        % Redo the preprocessing of the functional data
-        [ppparams,delfiles,~] = my_spmbatch_preprocfunc(ppparams,params,delfiles,keepfiles);
-
-        pparams.perf(1).aslprefix = ['d' pparams.perf(1).aslprefix];
-    end
+    if ~ppparams.error
+        % Search for the data files
+        ppparams = my_spmbatch_checkperffiles(ppparams,params);
     
-    % Do fALS preprocessing
-    [delfiles,keepfiles] = my_spmbatch_preprocfasl(ppparams,params,delfiles,keepfiles);
+        if contains(params.asl.splitaslbold,'meica') && ~contains(ppparams.perf(1).aslprefix,'d')
+            % Redo the preprocessing of the functional data
+            [ppparams,delfiles,~] = my_spmbatch_preprocfunc(ppparams,params,delfiles,keepfiles);
+    
+            pparams.perf(1).aslprefix = ['d' pparams.perf(1).aslprefix];
+        end
+        
+        % Do fALS preprocessing
+        [delfiles,keepfiles] = my_spmbatch_preprocfasl(ppparams,params,delfiles,keepfiles);
+    end
 end
