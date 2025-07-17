@@ -8,20 +8,22 @@ end
 
 %% Normalization of the functional scan
 if ne==ppparams.echoes(1)
-    reffile = fullfile(ppparams.subfuncdir,ppparams.reffunc);
-
-    funcnormest.subj.vol = {reffile}; % {fullfile(ppparams.subfuncdir,[ppparams.func(ne).prefix ppparams.func(ne).funcfile ',1'])};
-    funcnormest.eoptions.biasreg = 0.0001;
-    funcnormest.eoptions.biasfwhm = 60;
-    funcnormest.eoptions.tpm = {fullfile(spm('Dir'),'tpm','TPM.nii')};
-    funcnormest.eoptions.affreg = 'mni';
-    funcnormest.eoptions.reg = [0 0 0.1 0.01 0.04];
-    funcnormest.eoptions.fwhm = 0;
-    funcnormest.eoptions.samp = 3;
-
-    spm_run_norm(funcnormest);
-
     ppparams.deffile = fullfile(ppparams.subfuncdir,['y_' ppparams.reffunc]);
+    if ~exist(ppparams.deffile,"file")
+        reffile = fullfile(ppparams.subfuncdir,ppparams.reffunc);
+    
+        funcnormest.subj.vol = {reffile}; % {fullfile(ppparams.subfuncdir,[ppparams.func(ne).prefix ppparams.func(ne).funcfile ',1'])};
+        funcnormest.eoptions.biasreg = 0.0001;
+        funcnormest.eoptions.biasfwhm = 60;
+        funcnormest.eoptions.tpm = {fullfile(spm('Dir'),'tpm','TPM.nii')};
+        funcnormest.eoptions.affreg = 'mni';
+        funcnormest.eoptions.reg = [0 0 0.1 0.01 0.04];
+        funcnormest.eoptions.fwhm = 0;
+        funcnormest.eoptions.samp = 3;
+    
+        spm_run_norm(funcnormest);
+    end
+
     delfiles{numel(delfiles)+1} = {ppparams.deffile};
 end
 

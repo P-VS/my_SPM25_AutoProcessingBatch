@@ -32,6 +32,7 @@ end
 if isempty(funcniilist)
     fprintf(['No nifti files found for ' ppparams.substring ' ' ppparams.sesstring ' task-' ppparams.task '\n'])
     fprintf('\nPP_Error\n');
+    ppparams.error = true;
     return
 end
 
@@ -49,6 +50,7 @@ if isempty(funcjsonlist)
     if isempty(funcjsonlist)
         fprintf(['No json files found for ' ppparams.substring ' ' ppparams.sesstring ' task-' ppparams.task '\n'])
         fprintf('\nPP_Error\n');
+        ppparams.error = true;
         return
     end
 end
@@ -275,6 +277,7 @@ if for_functional
                 if isempty(tmp)
                     fprintf(['no fmap data found for echo ' num2str(ie) '\n'])
                     fprintf('\nPP_Error\n');
+                    ppparams.error = true;
                     return
                 end
             
@@ -284,6 +287,7 @@ if for_functional
                 if isempty(jstmp)
                     fprintf(['no fmap json file found for echo ' num2str(ie) '\n'])
                     fprintf('\nPP_Error\n');
+                    ppparams.error = true;
                     return
                 end
         

@@ -236,6 +236,7 @@ for ir=1:numel(params.iruns)
         end
     end
     edat{ir}.onset = edat{ir}.onset-dummys*tr;
+    if contains(params.modality,'fasl'), edat{ir}.onset=edat{ir}.onset-(params.asl.LabelingDuration+params.asl.PostLabelDelay); end
     
     for it=1:numel(edat{ir}.trial_type(:,1))
         ntrial_type(it,1) = convertCharsToStrings(edat{ir}.trial_type(it,:));
