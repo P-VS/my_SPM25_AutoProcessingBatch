@@ -24,7 +24,6 @@ if isfield(jsondat,'PostLabelDelay'), PLD = jsondat.PostLabelDelay; else PLD = p
 if isfield(jsondat,'SliceTiming'), SliceTimes = jsondat.SliceTiming; else SliceTimes = []; end
 if ~(numel(SliceTimes)==voldim(3)), SliceTimes = []; end
 
-isfield(jsondat,'MultibandAccellerationFactor')
 if isempty(SliceTimes)
     if isfield(jsondat,'MultibandAccelerationFactor') || isfield(jsondat,'MultibandAccellerationFactor')
         if isfield(jsondat,'MultibandAccelerationFactor'), hbf = jsondat.MultibandAccelerationFactor; 
