@@ -151,7 +151,7 @@ matlabbatch{1}.spm.stats.factorial_design.dir = {resultmap};
 jsondat = fileread(ppparams.frun(1).funcjsonfile);
 jsondat = jsondecode(jsondat);
 
-if ~params.reduced_temporal_resolution, tr = jsondat.RepetitionTime; else tr=params.newTR; end
+tr = jsondat.RepetitionTime;
 
 for ir=1:numel(params.iruns)
     % correct events file for dummy scans if needed
@@ -165,6 +165,7 @@ for ir=1:numel(params.iruns)
         edat{ir}.trial_type = T.trial_type;
     end
     edat{ir}.onset = edat{ir}.onset-dummys*tr;
+    edat{ir}.onset = edat{ir}.onset-(params.asl.LabelingDuration+params.asl.PostLabelDelay);
     
     for it=1:numel(edat{ir}.trial_type(:,1))
         ntrial_type(it,1) = convertCharsToStrings(edat{ir}.trial_type(it,:));
