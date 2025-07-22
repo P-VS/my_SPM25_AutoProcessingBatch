@@ -1,5 +1,10 @@
 function matlabbatch = my_spmbatch_asllevel1processing(sub,ses,run,task,datpath,params)
 
+params.add_parametricModulation = false; %use the weights in events.tsv for parametric modultion
+params.add_regressors = false; %if data not denoised set true otherwhise false 
+params.add_derivatives = false; %add temmperal and dispertion derivatives to the GLM (default=false)
+params.optimize_HRF = false;
+
 matlabbatch = {};
 
 %% Search for the data folders
