@@ -66,12 +66,15 @@ T1a = 1.650; %longitudinal relaxation time of arterial blood
 lambda = 0.9; %blood-brain partition coefficient for gray matter
 alpha = 0.85; %laeling efficiency
 
-Vasl=spm_vol(fullfile(ppparams.subperfdir,[ppparams.perf(1).aslprefix ppparams.perf(1).aslfile]));
-fasldata = spm_read_vols(Vasl);
+%Vasl=spm_vol(fullfile(ppparams.subperfdir,[ppparams.perf(1).aslprefix ppparams.perf(1).aslfile]));
+%fasldata = spm_read_vols(Vasl);
 
-conidx = 2:2:numel(Vasl);
+%conidx = 2:2:numel(Vasl);
 
-m0vol = mean(fasldata(:,:,:,conidx),4);
+%m0vol = mean(fasldata(:,:,:,conidx),4);
+
+Vm0 = spm_vol(fullfile(ppparams.subperfdir,[ppparams.perf(1).m0scanprefix ppparams.perf(1).m0scanfile]));
+m0vol = spm_read_vols(Vm0);
 
 mask = my_spmbatch_mask(m0vol);
 
@@ -93,7 +96,7 @@ corr_T1 = zeros(voldim);
 corr_T1(T1dat>0) = 1 ./ (1-exp(-tr./T1dat(T1dat>0)));
 m0vol = m0vol .* corr_T1;
 
-clear fasldata gmim wmim csfim T1dat corr_T1 GM WM CSF Vm0 Vasl
+clear gmim wmim csfim T1dat corr_T1 GM WM CSF Vm0 %Vasl fasldata
 
 %% CBF calculations series
 cm0vol = 2*alpha*m0vol*T1a.*(exp(-vol_PLD/T1a)-exp(-(LD+vol_PLD)/T1a));
