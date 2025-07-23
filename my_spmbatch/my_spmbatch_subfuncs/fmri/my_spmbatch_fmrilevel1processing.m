@@ -366,7 +366,11 @@ if contains(params.modality,'fasl') && contains(params.whichfile,'cbf')
 else
     matlabbatch{1}.spm.stats.fmri_spec.mthresh = 0.8; 
 end
-matlabbatch{1}.spm.stats.fmri_spec.cvi = params.model_serial_correlations;
+if contains(params.modality,'fasl')
+    matlabbatch{1}.spm.stats.fmri_spec.cvi = params.model_serial_correlations;
+else
+    matlabbatch{1}.spm.stats.fmri_spec.cvi = 'AR(1)';
+end
 matlabbatch{1}.spm.stats.fmri_spec.mask = {Vmask.fname};
 
 %% Optimize GLM with TEDM
