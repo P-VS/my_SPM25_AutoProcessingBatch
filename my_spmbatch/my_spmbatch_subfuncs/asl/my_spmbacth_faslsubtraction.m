@@ -5,14 +5,28 @@ fasldata = spm_read_vols(Vasl);
 
 voldim = size(fasldata);
 
-Vlabel=spm_vol(fullfile(ppparams.subperfdir,[ppparams.perf(1).labelprefix ppparams.perf(1).labelfile]));
-labeldata = spm_read_vols(Vlabel);
+if ~params.denoise.do_DUNE && ~contains(ppparams.perf(1).labelprefix,'l')
+    Vlabel=spm_vol(fullfile(ppparams.subperfdir,[ppparams.perf(1).labelprefix ppparams.perf(1).labelfile]));
+    labeldata = spm_read_vols(Vlabel);
 
-if ~params.denoise.do_DUNE, fasldata = fasldata + labeldata; end
+    fasldata = fasldata + labeldata; 
+
+    Vout = Vasl;
+    rmfield(Vout,'pinfo');
+    for iv=1:voldim(4)
+        Vout(iv).fname = fullfile(ppparams.subperfdir,['l' ppparams.perf(1).aslprefix ppparams.perf(1).aslfile]);
+        Vout(iv).descrip = 'my_spmbatch - deltam';
+        Vout(iv).dt = [spm_type('float32'),spm_platform('bigend')];
+        Vout(iv).n = [iv 1];
+        Vout(iv) = spm_write_vol(Vout(iv),fasldata(:,:,:,iv));
+    end
+
+    ppparams.perf(1).aslprefix = ['l' ppparams.perf(1).aslprefix];
+
+    clear Vout Vlabel labeldata
+end
 
 mask = my_spmbatch_mask(fasldata);
-
-clear Vlabel labeldata
 
 conidx = 2:2:voldim(4);
 labidx = 1:2:voldim(4);
@@ -27,32 +41,6 @@ fasldata = reshape(fasldata,[voldim(1)*voldim(2)*voldim(3),voldim(4)]);
 
 ncondat = fasldata(mask>0,:);
 nlabdat = fasldata(mask>0,:);
-
-for p=1:voldim(4)
-    if sum(conidx==p)==0
-        % 6 point sinc interpolation
-        idx=p+[-5 -3 -1 1 3 5];
-        idx(find(idx<min(conidx)))=min(conidx);
-        idx(find(idx>max(conidx)))=max(conidx);
-        normloc=3.5;
-
-        ncondat(:,p)=sinc_interpVec(fasldata(mask>0,idx),normloc);
-    end
-    if sum(labidx==p)==0
-        % 6 point sinc interpolation
-        idx=p+[-5 -3 -1 1 3 5];
-        idx(find(idx<min(labidx)))=min(labidx);
-        idx(find(idx>max(labidx)))=max(labidx);
-        normloc=3.5;
-    
-        nlabdat(:,p)=sinc_interpVec(fasldata(mask>0,idx),normloc);
-    end
-end
-
-bl_signal = fasldata(mask>0,:)-(ncondat+nlabdat)/2;
-
-ncondat = bl_signal;
-nlabdat = bl_signal;
 
 for p=1:voldim(4)
     if sum(conidx==p)==0

@@ -66,13 +66,6 @@ T1a = 1.650; %longitudinal relaxation time of arterial blood
 lambda = 0.9; %blood-brain partition coefficient for gray matter
 alpha = 0.85; %laeling efficiency
 
-%Vasl=spm_vol(fullfile(ppparams.subperfdir,[ppparams.perf(1).aslprefix ppparams.perf(1).aslfile]));
-%fasldata = spm_read_vols(Vasl);
-
-%conidx = 2:2:numel(Vasl);
-
-%m0vol = mean(fasldata(:,:,:,conidx),4);
-
 Vm0 = spm_vol(fullfile(ppparams.subperfdir,[ppparams.perf(1).m0scanprefix ppparams.perf(1).m0scanfile]));
 m0vol = spm_read_vols(Vm0);
 
