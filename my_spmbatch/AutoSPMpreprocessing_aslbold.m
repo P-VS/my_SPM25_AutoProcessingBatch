@@ -33,13 +33,13 @@ params.GroupICAT_path = '/Users/accurad/Library/Mobile Documents/com~apple~Cloud
 
 datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_OpenNeuro_FT/IndData';
 
-sublist = [1:13];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [4,5];%list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1]; %nsessions>0
 
-params.func_save_folder = 'preproc_dune_wf_bold'; %name of the folder to save the preprocessed bold data
-params.perf_save_folder = 'preproc_dune_wf_asl'; %name of the folder to save the preprocessed asl data
+params.func_save_folder = 'preproc_dune-dla_bold'; %name of the folder to save the preprocessed bold data
+params.perf_save_folder = 'preproc_dune-dla_asl'; %name of the folder to save the preprocessed asl data
 
 task ={'bilateralfingertapping'};
 

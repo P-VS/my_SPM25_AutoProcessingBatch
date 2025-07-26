@@ -24,16 +24,16 @@ params.spm_path = '/Users/accurad/Library/Mobile Documents/com~apple~CloudDocs/M
 
 %% Give the basic input information of your data
 
-datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_OpenNeuro_FT/IndData'; %'/Volumes/LaCie/UZ_Brussel/ME_fMRI_GE/data';  %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data';
+datpath = '/Volumes/LaCie/UZ_Brussel/ASLBOLD_OpenNeuro_FT/IndData'; %'/Volumes/LaCie/UZ_Brussel/ME_fMRI_GE/data';  %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_Manon/data'; %'/Volumes/LaCie/UZ_Brussel/ASLBOLD_OpenNeuro_FT/IndData';
 
-sublist = [1:13]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
+sublist = [4,5]; %﻿list with subject id of those to preprocess separated by , (e.g. [1,2,3,4]) or alternatively use sublist = [first_sub:1:last_sub]
 params.sub_digits = 2; %if 2 the subject folder is sub-01, if 3 the subject folder is sub-001, ...
 
 nsessions = [1]; %nsessions>0
  
-params.task = {'bilateralfingertapping'}; %{'PREcog'}; %{'ME-EmoFaces'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
+params.task = {'bilateralfingertapping'}; %{'PREcog'}; %{'bilateralfingertapping'}; %text string that is in between task_ and _bold in your fNRI nifiti filename
 
-params.analysisname = '_dune_cbf_glm';
+params.analysisname = 'dune-dla_cbf_glm';
 params.modality = 'fasl'; %'fmri' of 'fasl'
 
 params.use_parallel = false; 
@@ -42,7 +42,7 @@ params.loadmaxvols = 100; %to reduce memory load, the preprocessing can be split
 params.keeplogs = false;
 
 %% fMRI data parameters
-    params.preprocfmridir = 'preproc_dune_wf_asl'; %'preproc_bold_dune'; %'preproc_func_ME-EmoFaces_dune'; %directory with the preprocessed fMRI data
+    params.preprocfmridir = 'preproc_dune-dla_asl'; %'preproc_bold_dune'; %'preproc_func_ME-EmoFaces_dune'; %directory with the preprocessed fMRI data
     params.fmri_prefix = 'swcdlavfre'; %'swacdfre'; %'swacdure'; %fMRI file name of form [fmri_prefix 'sub-ii_task-..._' fmri_endfix '.nii']
     
     params.dummytime = 0; %only if the timings in the _events.tsv file should be corrected for dummy scans
@@ -72,7 +72,7 @@ params.keeplogs = false;
     params.add_derivatives = true; %add temmperal and dispertion derivatives to the GLM (default=false)
     params.optimize_HRF = false; %Optimize HRF parameters (peak time and duration) to the data using the TEDM toolbox (only possible for BOLD)
     params.use_ownmask = true;
-    params.model_serial_correlations = 'AR(1)'; %'AR(1) for fmri, 'none' for fasl
+    params.model_serial_correlations = 'none'; %'AR(1) for fmri, 'none' for fasl
     params.hpf = 128; %default 128 but changed to tr*(nvol-1) if already filtered (f in prefix)
 
 %% SPM results analysis
