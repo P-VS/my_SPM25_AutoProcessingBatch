@@ -5,27 +5,6 @@ fasldata = spm_read_vols(Vasl);
 
 voldim = size(fasldata);
 
-if ~params.denoise.do_DUNE && ~contains(ppparams.perf(1).labelprefix,'l')
-    Vlabel=spm_vol(fullfile(ppparams.subperfdir,[ppparams.perf(1).labelprefix ppparams.perf(1).labelfile]));
-    labeldata = spm_read_vols(Vlabel);
-
-    fasldata = fasldata + labeldata; 
-
-    Vout = Vasl;
-    rmfield(Vout,'pinfo');
-    for iv=1:voldim(4)
-        Vout(iv).fname = fullfile(ppparams.subperfdir,['l' ppparams.perf(1).aslprefix ppparams.perf(1).aslfile]);
-        Vout(iv).descrip = 'my_spmbatch - deltam';
-        Vout(iv).dt = [spm_type('float32'),spm_platform('bigend')];
-        Vout(iv).n = [iv 1];
-        Vout(iv) = spm_write_vol(Vout(iv),fasldata(:,:,:,iv));
-    end
-
-    ppparams.perf(1).aslprefix = ['l' ppparams.perf(1).aslprefix];
-
-    clear Vout Vlabel labeldata
-end
-
 mask = my_spmbatch_mask(fasldata);
 
 conidx = 2:2:voldim(4);
@@ -50,7 +29,7 @@ for p=1:voldim(4)
         idx(find(idx>max(conidx)))=max(conidx);
         normloc=3.5;
 
-        ncondat(:,p)=sinc_interpVec(bl_signal(:, idx),normloc);
+        ncondat(:,p)=sinc_interpVec(fasldata(mask>0, idx),normloc);
     end
     if sum(labidx==p)==0
         % 6 point sinc interpolation
@@ -59,7 +38,7 @@ for p=1:voldim(4)
         idx(find(idx>max(labidx)))=max(labidx);
         normloc=3.5;
     
-        nlabdat(:,p)=sinc_interpVec(bl_signal(:, idx),normloc);
+        nlabdat(:,p)=sinc_interpVec(fasldata(mask>0, idx),normloc);
     end
 end
 
