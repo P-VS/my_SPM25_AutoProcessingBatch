@@ -1,35 +1,6 @@
 function [ppparams,keepfiles,delfiles] = my_spmbatch_dune(ppparams,params,keepfiles,delfiles)
 
 if params.func.isaslbold && contains(ppparams.func(1).funcfile,'_aslbold.nii')
-    if ~contains(ppparams.func(1).prefix,'l')
-        for ie=ppparams.echoes
-            Vasl=spm_vol(fullfile(ppparams.subfuncdir,[ppparams.func(ie).prefix ppparams.func(ie).funcfile]));
-            fasldata = spm_read_vols(Vasl);
-        
-            ppparams.subperfdir = fullfile(ppparams.subpath,'perf');
-            fname = split(ppparams.func(ie).funcfile,'_aslbold.nii');
-    
-            tpref = split(ppparams.func(ie).prefix,'f');
-            Vlabel=spm_vol(fullfile(ppparams.subperfdir,['f' tpref{end} fname{1} '_label.nii']));
-            labeldata = spm_read_vols(Vlabel);
-            
-            fasldata = fasldata + labeldata;
-            
-            for iv=1:numel(Vasl)
-                Vasl(iv).fname = fullfile(ppparams.subfuncdir,['l' ppparams.func(ie).prefix ppparams.func(ie).funcfile]);
-                Vasl(iv).descrip = 'my_spmbatch - pre DUNE';
-                Vasl(iv).pinfo = [1,0,0];
-                Vasl(iv).n = [iv 1];
-            end
-            
-            Vasl = myspm_write_vol_4d(Vasl,fasldata);
-        
-            clear Vlabel labeldata Vasl fasldata
-    
-            ppparams.func(ie).prefix = ['l' ppparams.func(ie).prefix];
-        end
-    end
- 
     fname = split(ppparams.func(1).funcfile,'_aslbold.nii');
     ppparams.func(1).funcfile = [fname{1} '_bold.nii'];
     ppparams.perf(1).perffile = [fname{1} '_asl.nii'];
